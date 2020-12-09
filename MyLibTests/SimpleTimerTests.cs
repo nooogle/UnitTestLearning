@@ -8,6 +8,12 @@ namespace MyLibTests
     /// <summary>
     /// Unit tests for the simple timer class. 
     /// </summary>
+    /// <remarks>
+    /// Using NSubstitute to provide a mocked date time system, whereby we
+    /// can simulate any particular date/time.
+    ///
+    /// Using FluentAssertions for enhanced assertion checking.
+    /// </remarks>
     public class SimpleTimerTests
     {
         readonly TimeSpan timerInterval = TimeSpan.FromSeconds(10);
@@ -23,21 +29,30 @@ namespace MyLibTests
         [InlineData(10)]
         public void WithinInterval_Expired(int secondsElapsed)
         {
+            // Use NSubstitute to provide an implementation of IDateTimeServices.
             var dateTimeServices = Substitute.For<System.Abstractions.IDateTimeServices>();
-
             dateTimeServices.UtcNow.Returns(new DateTime(2020, 1, 1));
 
 
+            // Our timer that we want to test
             var simpleTimer = new MyLib.SimpleTimer(
                 dateTimeServices: dateTimeServices,
                 interval: timerInterval);
 
 
+            // Update the mocked date time services so that a simulated interval
+            // of time has elapsed, less than the 
             dateTimeServices.UtcNow.Returns(
                 dateTimeServices.UtcNow +
                 TimeSpan.FromSeconds(secondsElapsed));
 
-            simpleTimer.Expired.Should().BeFalse();                        
+
+            // FluentAssertions method of checking the Expired property
+            simpleTimer.Expired.Should().BeFalse();
+
+
+            // Standard XUnit test for comparison
+            Assert.False(simpleTimer.Expired);
         }
 
 
@@ -61,6 +76,7 @@ namespace MyLibTests
             dateTimeServices.UtcNow.Returns(
                 dateTimeServices.UtcNow +
                 TimeSpan.FromSeconds(secondsElapsed));
+
 
             simpleTimer.Expired.Should().BeTrue();
         }
