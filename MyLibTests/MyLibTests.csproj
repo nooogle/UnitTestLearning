@@ -19,6 +19,8 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.5" />
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.5" />
   </ItemGroup>
 
   <ItemGroup>
